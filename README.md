@@ -38,3 +38,66 @@ hit   -> draws another card
 stay  -> does not draw and keeps score
 split -> splits the hand and users plays to hands
 quit  -> quits the session
+
+# Design 
+main
+    play = true
+    get(command)
+
+    dealer.dealIn();
+
+    while(play):
+        string command = ""
+        switch command
+            case hit:
+                dealer.drawCard();
+                presenter.UpdateScree();
+                break;
+            case split:
+                dealer.Split()
+                dealer.drawCard();
+                presenter.UpdateScree();
+                break;
+            case stay:
+                dealer.play();
+                presenter.UpdateScree();
+                break;
+            case quit:
+                play = false;
+                break;
+            case default:
+                "invalid input try again"
+                break;
+
+Dealer:
+    Hand hands = [HAND1, HAND2, DEALER]
+    Deck
+    
+    Hand CurrentHand
+    
+    public draw():
+        hand = DetermineCurrentHand()
+        hand.append(deck.draw())
+
+    private DetermineCurrentHand()
+
+Hand:
+    Card[];
+    int total;
+
+    public void AddToHand();
+    public int GetHandTotal();
+    public bool HasBusted();
+
+Deck:
+    struct card {
+        int value
+        string suite
+    }
+
+    public Deck()
+    public card DrawCard()
+
+```mermaide
+
+```
