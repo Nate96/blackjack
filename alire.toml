@@ -1,0 +1,12 @@
+name = "blackjack"
+description = "blackjack"
+version = "0.1.0-dev"
+
+authors = ["Nate Braukhoff"]
+maintainers = ["Nate Braukhoff <example@example.com>"]
+maintainers-logins = ["github-username"]
+licenses = "MIT OR Apache-2.0 WITH LLVM-exception"
+website = ""
+tags = []
+
+executables = ["blackjack"]
