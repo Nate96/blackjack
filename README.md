@@ -70,15 +70,14 @@ main
                 "invalid input try again"
                 break;
 
-Player:
-  hand card[];
+Dealer:
+    hand Card[];
+    hands hand[];
     
-    public void AddToHand();
-    public int GetHandTotal();
-    public bool HasBusted();
+    public void AddToHand(int index);
+    public int GetHandTotal(int index);
+    public bool HasBusted(int index);
     public draw():
-
-
 
 Deck:
     deck card[]
