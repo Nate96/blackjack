@@ -1,30 +1,38 @@
-with Ada.Text_IO;
+with Ada.Text_IO; use Ada.Text_IO;
+with Player;
+
 
 procedure Blackjack is
+   type Card is record
+      suite: String(1..7);
+      value: Natural;
+   end record;
+
   command : String(1..7);
   last    : Natural;
   play    : Boolean := True;
+  newGame : Boolean := True;
+  My_Float : Float := 3.14;
 
-begin
-
-  Ada.Text_IO.Put_Line("Play: " & Boolean'Image(play));
+begin 
 
   while play loop
-    Ada.Text_IO.Put_Line("Hit, Stay, or Split");
-    Ada.Text_IO.Get_Line(command, last);
+     Put(My_Float.Image);
+     Put_Line("Hit, Stay, or Split");
+     Get_Line(command, last);
 
-    if command(1..last) = "hit" then
-        Ada.Text_IO.Put_Line("in hit");
-    elsif command(1..last) = "stay" then 
-        Ada.Text_IO.Put_Line("in stay");
-    elsif command(1..last) = "split" then 
-        Ada.Text_IO.Put_Line("in split");
-    elsif command(1..last) = "quit" then 
-        Ada.Text_IO.Put_Line("in quit");
+     if command(1..last) = "hit" then
+        Put_Line("in hit");
+     elsif command(1..last) = "stay" then 
+        Put_Line("in stay");
+     elsif command(1..last) = "split" then 
+        Put_Line("in split");
+     elsif command(1..last) = "quit" then 
+        Put_Line("in quit");
         play := False;
-    else 
-        Ada.Text_IO.Put_Line("Invalid input try again");
-    end if;
+     else 
+        Put_Line("Invalid input try again");
+     end if;
   end loop;
 
 end Blackjack;

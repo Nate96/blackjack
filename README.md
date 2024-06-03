@@ -1,3 +1,6 @@
+# Blackjack
+A Basic Blackjack played on the command line written in ADA
+
 # Set up
 1. Download [Alire](https://ada-lang.io/)
 2. Install GCC
@@ -6,16 +9,14 @@
 - Mac:     brew install gcc
 - Ubuntu:  sudo apt install build-essential
 
- Blackjack
-A Basic Blackjack played on the command line written in ADA
-
 # Flow
 1. Place Bet
-2. Deal 3 cards > 2 to player facing up, and 2 to the dealer one facing up and 
-   one facing down
-3. Hit or Stay
+2. Deal 2 cards 
+- 2 to player facing up, and 2 to the dealer one facing up and one facing down
+3. hit, stay, or split
     Hit    > player draws one more card
-    status > dealer draws cards
+    stay   > dealer draws cards
+    split  > when user draws two of the same card split and play two hands 
 
 # End Condition
 1. User wins if total is less than 21 and more than total of the dealer
@@ -69,34 +70,25 @@ main
                 "invalid input try again"
                 break;
 
-Dealer:
-    Hand hands = [HAND1, HAND2, DEALER]
-    Deck
+Player:
+  hand card[];
     
-    Hand CurrentHand
-    
-    public draw():
-        hand = DetermineCurrentHand()
-        hand.append(deck.draw())
-
-    private DetermineCurrentHand()
-
-Hand:
-    Card[];
-    int total;
-
     public void AddToHand();
     public int GetHandTotal();
     public bool HasBusted();
+    public draw():
+
+
 
 Deck:
-    struct card {
-        int value
-        string suite
-    }
+    deck card[]
+
 
     public Deck()
     public card DrawCard()
+
+Presenter:
+    present():
 
 ```mermaide
 
