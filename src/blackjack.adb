@@ -2,28 +2,36 @@ pragma Extensions_Allowed(All);
 
 with Ada.Text_IO; use Ada.Text_IO;
 With Deck; use Deck;
-
+with Ada.Numerics.Discrete_Random; 
 
 procedure Blackjack is
-    type Hand is array(1..11) of Deck.Card;
+    -- TODO:
+    -- 1. Special Case for ACES
+    -- 2. Print hand 
+    -- 3. Implement When the player Busts
+    -- 4. Fix Random Generator 
 
-    command  : String(1..7);
+    -- Junk card to fill the Hand_Array
+    DEFAULT_CARD : constant Deck.Card := (Rank => Deck.INVALID, 
+                                      Suit => Deck.hearts,
+                                      Value => 0,
+                                      Picked => True);
+    MAX_VAVLUE         : constant Integer := 21;
+    MAX_HAND_COUNT     : constant Integer := 11;
+    MAX_COMMAND_LENGTH : constant Integer := 7;
+    
+    type Hand is array(1..MAX_HAND_COUNT) of Deck.Card;
+
+    command  : String(1..MAX_COMMAND_LENGTH);
     last     : Natural;
 
     play        : Boolean := True;
-    newGame     : Boolean := True;
+    New_Game    : Boolean := True;
     Player_Turn : Boolean := True;
     Dealer_Turn : Boolean := True;
     Run_Game    : Boolean := True;
 
-    gameDeck    : Deck.Deck_2_0 := Deck.Create_Deck;
-    MAX_VAVLUE  : constant Integer := 21;
-
-    -- Junk card to fill the Hand_Array
-    default_card : constant Deck.Card := (Rank => Deck.INVALID, 
-                                      Suit => Deck.hearts,
-                                      Card_Value => 0,
-                                      Picked => True);
+    Game_Deck   : Deck.Deck_2_0 := Deck.Create_Deck;
 
     Player_Hand : Hand := (others => default_card);
     Player_Hand_Count : Integer := 0;
@@ -34,8 +42,8 @@ procedure Blackjack is
     function Get_Hand_Score(h: Hand) return Integer is
     begin
         total : Integer := 0;
-        for I in 1 .. 11 loop
-            total := total + h(I).Card_Value;
+        for I in 1 .. MAX_HAND_COUNT loop
+            total := total + h(I).Value;
         end loop;
 
         return total;
@@ -43,6 +51,18 @@ procedure Blackjack is
 
     function Draw return Deck.Card is
     begin
+        Card       : Deck.Card;
+        Card_Index : Integer;
+
+        loop
+            Card_Index := Random_Generator.Random(Gen);
+            Card := Game_Deck(Card_Index);
+            exit when not Card.Picked;
+        end loop;
+
+        Card.Picked := True;
+        return Card;
+
         return default_card;
     end Draw;
 
@@ -54,12 +74,19 @@ procedure Blackjack is
 
     procedure Print_Hand(h : Hand) is
     begin
-        Put_Line("printing hand");
+        for I in 1 .. MAX_HAND_COUNT loop
+            if h(I).Value > 0 then 
+                Put_Line(h(I).Suit);
+                Put_Line(h(I).Value);
+            end if;
+        end loop;
     end Print_Hand;
 
 begin 
+    Random_Generator.Reset(Gen);
+
     while play loop
-        if newGame then
+        if New_Game then
             Player_Hand_Count := Player_Hand_Count + 1;
             Player_Hand(Player_Hand_Count) := Draw;
 
@@ -72,15 +99,17 @@ begin
             Dealer_Hand_Count := Dealer_Hand_Count + 1;
             Dealer_Hand(Dealer_Hand_Count) := Draw;
 
-            newGame := false;
+            New_Game := false;
         end if;
 
-        Put_Line("Dealer Hand: List cards: Total Score:");
+        Put("Dealer Hand: ");
+        Print_Hand(Dealer_Hand);
         Put_Line("Total Score: " & Integer'Image(Get_Hand_Score(Dealer_Hand)));
 
         Put_Line("");
         
-        Put_Line("Player Hand: List cards: Total Score");
+        Put_Line("Player Hand: ");
+        Print_Hand(Dealer_Hand);
         Put_Line("Total Score: " & Integer'Image(Get_Hand_Score(Player_Hand)));
 
         Put_Line("");

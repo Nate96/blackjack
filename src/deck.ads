@@ -1,11 +1,11 @@
 package Deck is
-   type Suit_Type is (hearts, diamonds, spades, clubs);
-   type Rank_Type is (ACE, TWO, THREE, FOUR, FIVE, SIX, 
-      SEVEN, EIGHT, NINE, TEN, JACK, QUEEN, KING, INVALID);
+   type Suit_Type is (HEARTS, DIAMONDS, SPADES, CLUBS);
+   type Rank_Type is (ACE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE, TEN, JACK, QUEEN, KING, INVALID);
+
    type Card is record
-      Rank : Rank_Type;
-      Suit : Suit_Type;
-      Card_Value : Integer;
+      Rank   : Rank_Type;
+      Suit   : Suit_Type;
+      Value  : Integer;
       Picked : Boolean;
    end record;
 
@@ -13,4 +13,3 @@ package Deck is
 
    function Create_Deck return Deck_2_0;
 end Deck;
-
