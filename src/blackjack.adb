@@ -52,10 +52,10 @@ procedure Blackjack is
     function Draw return Deck.Card is
     begin
         Card       : Deck.Card;
-        Card_Index : Integer;
+        Card_Index : Integer := 0;
 
         loop
-            Card_Index := Random_Generator.Random(Gen);
+            -- Card_Index := Random_Generator.Random(Gen);
             Card := Game_Deck(Card_Index);
             exit when not Card.Picked;
         end loop;
@@ -76,14 +76,14 @@ procedure Blackjack is
     begin
         for I in 1 .. MAX_HAND_COUNT loop
             if h(I).Value > 0 then 
-                Put_Line(h(I).Suit);
-                Put_Line(h(I).Value);
+                Put_Line("SUIT");
+                Put_Line("VALUE");
             end if;
         end loop;
     end Print_Hand;
 
 begin 
-    Random_Generator.Reset(Gen);
+    -- Random_Generator.Reset(Gen);
 
     while play loop
         if New_Game then

@@ -9,7 +9,7 @@ package body Deck is
             for J in hearts .. clubs loop
                 Full_Deck((Rank_Type'Pos(I)) * 4 + J'Enum_Rep + 1) := (Rank => I, Suit => J,
                 -- Cap the most value to 10 (ace is special case)
-                Card_Value => (if Value > 10 then 10 else Value),
+                Value => (if Value > 10 then 10 else Value),
                 Picked => False);
             end loop;
         end loop;
