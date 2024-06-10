@@ -6,19 +6,17 @@ with Ada.Numerics.Discrete_Random;
 
 procedure Blackjack is
     -- TODO:
-    -- 1. Special Case for ACES
-    -- 2. Print hand 
-    -- 3. Implement When the player Busts
-    -- 4. Fix Random Generator 
+   -- 4. Fix Random Generator 
+   --  draw card
 
     -- Junk card to fill the Hand_Array
     DEFAULT_CARD : constant Deck.Card := (Rank => Deck.INVALID, 
                                       Suit => Deck.hearts,
                                       Value => 0,
                                       Picked => True);
-    MAX_VAVLUE         : constant Integer := 21;
     MAX_HAND_COUNT     : constant Integer := 11;
-    MAX_COMMAND_LENGTH : constant Integer := 7;
+    MAX_COMMAND_LENGTH : constant Integer :=  7;
+    BLACK_JACK         : constant Integer := 21;
     
     type Hand is array(1..MAX_HAND_COUNT) of Deck.Card;
 
@@ -39,14 +37,38 @@ procedure Blackjack is
     Dealer_Hand : Hand := (others => default_card);
     Dealer_Hand_Count : Integer := 0;
 
-    function Get_Hand_Score(h: Hand) return Integer is
+    function Get_Hand_Score(h: in Hand) return Integer is
+       high_score : Integer := 0;
+       low_score  : Integer := 0;
     begin
-        total : Integer := 0;
-        for I in 1 .. MAX_HAND_COUNT loop
-            total := total + h(I).Value;
+        for card in 1 .. MAX_HAND_COUNT loop
+           if h(card).Value = 1 then
+              high_score := high_score + 10;
+              low_score := low_score + 1;
+           else
+              high_score := high_score + h(card).Value;
+              low_score := low_score + h(card).Value;
+           end if;
         end loop;
-
-        return total;
+         
+        -- (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+        -- (1, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0)  > 8, 18 > 18 
+        -- (1, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0) > 11, 21 > 21 
+        --
+        --
+        -- (3, 4, 1, 0, 0, 0, 0, 0, 0, 0, 0) > 8, 19 > 19
+        -- (3, 4, 2, 1, 0, 0, 0, 0, 0, 0, 0) > 10, 21 > 21
+        --
+        -- (10, 3, 1, 0, 0, 0, 0, 0, 0, 0, 0) > 14, 24 > 24
+        -- (10, 3, 1, 1, 0, 0, 0, 0, 0, 0, 0) > 15, (>22) > 15
+        -- (10, 3, 1, 1, 5, 0, 0, 0, 0, 0, 0) > 20, (>22) > 20
+        if high_score <= BLACK_JACK and low_score <= BLACK_JACK then
+           return high_score;
+        elsif low_score > BLACK_JACK then
+           return BLACK_JACK + 1;
+        else
+           return low_score;
+        end if;
     end Get_Hand_Score;
 
     function Draw return Deck.Card is
@@ -54,32 +76,32 @@ procedure Blackjack is
         Card       : Deck.Card;
         Card_Index : Integer := 0;
 
-        loop
-            -- Card_Index := Random_Generator.Random(Gen);
-            Card := Game_Deck(Card_Index);
-            exit when not Card.Picked;
-        end loop;
-
-        Card.Picked := True;
-        return Card;
+--        loop
+--            -- Card_Index := Random_Generator.Random(Gen);
+--            Card := Game_Deck(Card_Index);
+--            exit when not Card.Picked;
+--        end loop;
+--
+--        Card.Picked := True;
+--        return Card;
 
         return default_card;
     end Draw;
 
-    function Has_Busted(h : Hand) return Boolean is 
-    begin 
-        Hand_Score : Integer := Get_Hand_Score (h);
-        return Hand_Score > MAX_VAVLUE;
-    end Has_Busted;
-
     procedure Print_Hand(h : Hand) is
     begin
-        for I in 1 .. MAX_HAND_COUNT loop
-            if h(I).Value > 0 then 
-                Put_Line("SUIT");
-                Put_Line("VALUE");
-            end if;
-        end loop;
+       Put_Line("printing hand");
+       for I in 1 .. MAX_HAND_COUNT loop
+          suite_char : Character := Get_Suit_Char(h(i).Suit);
+          card_value : Integer := h(i).Value;
+          
+          if card_value = 1 then 
+             Put("A," & Integer'Image(card_value) & "; ");
+          elsif card_value > 0 then
+             Put(suite_char & "," & Integer'Image(card_value) & "; ");
+          end if;
+       end loop;
+          Put_Line("");
     end Print_Hand;
 
 begin 
@@ -102,15 +124,28 @@ begin
             New_Game := false;
         end if;
 
+        -- Print Details
         Put("Dealer Hand: ");
         Print_Hand(Dealer_Hand);
-        Put_Line("Total Score: " & Integer'Image(Get_Hand_Score(Dealer_Hand)));
+        score : Integer := Get_Hand_Score(Dealer_Hand);
+
+        if score > BLACK_JACK then 
+           Put_Line ("Bust");
+        else
+           Put_Line("Total Score: " & Integer'Image(score));
+        end if;
 
         Put_Line("");
         
-        Put_Line("Player Hand: ");
+        Put("Player Hand: ");
         Print_Hand(Dealer_Hand);
-        Put_Line("Total Score: " & Integer'Image(Get_Hand_Score(Player_Hand)));
+        score := Get_Hand_Score(Dealer_Hand);
+
+        if (score > BLACK_JACK) then 
+           Put_Line ("Bust");
+        else
+           Put_Line("Total Score: " & Integer'Image(score));
+        end if;
 
         Put_Line("");
 
@@ -127,6 +162,8 @@ begin
                 Player_Turn := false;
             elsif command(1..last) = "split" then 
                 Put_Line("Going to be Implemented in 2.0");
+            elsif command(1..last) = "quit" then 
+               play := false;
             else 
                 Put_Line("Invalid input try again");
             end if;
